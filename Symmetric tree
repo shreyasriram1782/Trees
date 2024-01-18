@@ -1,0 +1,57 @@
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def is_symmetric(root):
+    def is_mirror(left, right):
+        if not left and not right:
+            return True
+        if not left or not right:
+            return False
+
+        return (left.value == right.value) and \
+               is_mirror(left.left, right.right) and \
+               is_mirror(left.right, right.left)
+
+    if not root:
+        return True  # An empty tree is symmetric
+
+    return is_mirror(root.left, root.right)
+
+# Example usage:
+# Constructing a symmetric binary tree:
+#       1
+#      / \
+#     2   2
+#    / \ / \
+#   3  4 4  3
+
+symmetric_root = TreeNode(1)
+symmetric_root.left = TreeNode(2)
+symmetric_root.right = TreeNode(2)
+symmetric_root.left.left = TreeNode(3)
+symmetric_root.left.right = TreeNode(4)
+symmetric_root.right.left = TreeNode(4)
+symmetric_root.right.right = TreeNode(3)
+
+result_symmetric = is_symmetric(symmetric_root)
+
+# Constructing a non-symmetric binary tree:
+#       1
+#      / \
+#     2   2
+#      \   \
+#       3   3
+
+non_symmetric_root = TreeNode(1)
+non_symmetric_root.left = TreeNode(2)
+non_symmetric_root.right = TreeNode(2)
+non_symmetric_root.left.right = TreeNode(3)
+non_symmetric_root.right.right = TreeNode(3)
+
+result_non_symmetric = is_symmetric(non_symmetric_root)
+
+print(f"Symmetric tree result: {result_symmetric}")
+print(f"Non-symmetric tree result: {result_non_symmetric}")
