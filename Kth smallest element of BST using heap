@@ -1,0 +1,39 @@
+import heapq
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def kth_smallest_bst(root, k):
+    min_heap = []
+    
+    def inorder_traversal(node):
+        if node:
+            heapq.heappush(min_heap, node.val)
+            inorder_traversal(node.left)
+            inorder_traversal(node.right)
+
+    inorder_traversal(root)
+    
+    # Extract the kth smallest element from the min heap
+    for _ in range(k - 1):
+        heapq.heappop(min_heap)
+
+    return min_heap[0]
+
+# Example
+# Constructing a sample BST
+#       3
+#      / \
+#     1   4
+#      \
+#       2
+root = TreeNode(3)
+root.left = TreeNode(1, None, TreeNode(2))
+root.right = TreeNode(4)
+
+k = 2
+result = kth_smallest_bst(root, k)
+print(f"The {k}th smallest element in the BST is: {result}")
