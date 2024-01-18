@@ -1,0 +1,38 @@
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def diameter_of_binary_tree(root):
+    def helper(node):
+        if not node:
+            return 0  # Height
+
+        left_height = helper(node.left)
+        right_height = helper(node.right)
+
+        # Update the global variable to store the diameter
+        nonlocal diameter
+        diameter = max(diameter, left_height + right_height)
+
+        # Return the height of the current node
+        return max(left_height, right_height) + 1
+
+    diameter = 0  # Global variable to store the diameter
+    helper(root)
+    return diameter
+
+# Example usage:
+# Construct a sample binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.right = TreeNode(6)
+root.left.right.left = TreeNode(7)
+root.left.right.right = TreeNode(8)
+
+result = diameter_of_binary_tree(root)
+print("Diameter of the binary tree:", result)
