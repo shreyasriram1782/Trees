@@ -1,0 +1,44 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def find_target(root, k):
+    def inorder_traversal(node, hash_set):
+        if not node:
+            return False
+
+        # Check if complement exists in the hash set
+        if k - node.val in hash_set:
+            return True
+
+        # Add the current node's value to the hash set
+        hash_set.add(node.val)
+
+        # Continue the in-order traversal
+        return inorder_traversal(node.left, hash_set) or inorder_traversal(node.right, hash_set)
+
+    # Initialize an empty hash set
+    hash_set = set()
+
+    # Start the in-order traversal
+    return inorder_traversal(root, hash_set)
+
+# Example
+# Constructing a sample BST
+#       5
+#      / \
+#     3   6
+#    / \   \
+#   2   4   7
+root = TreeNode(5)
+root.left = TreeNode(3)
+root.right = TreeNode(6)
+root.left.left = TreeNode(2)
+root.left.right = TreeNode(4)
+root.right.right = TreeNode(7)
+
+target_sum = 9
+result = find_target(root, target_sum)
+print("Existence of two elements with sum", target_sum, ":", result)
