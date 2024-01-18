@@ -1,0 +1,46 @@
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def find_paths_with_sum(root, target_sum):
+    paths = []
+    count = find_paths_recursive(root, target_sum, [], paths)
+    return paths, count
+
+def find_paths_recursive(node, target_sum, current_path, all_paths):
+    if node is None:
+        return 0
+
+    current_path.append(node.value)
+
+    if node.left is None and node.right is None:
+        # Leaf node, check if the path sum equals the target sum
+        if sum(current_path) == target_sum:
+            all_paths.append(list(current_path))
+            return 1  # Path found, increment count
+
+    # Recursive calls for left and right subtrees
+    count_left = find_paths_recursive(node.left, target_sum, current_path, all_paths)
+    count_right = find_paths_recursive(node.right, target_sum, current_path, all_paths)
+
+    # Backtrack: Remove the current node from the current path
+    current_path.pop()
+
+    return count_left + count_right
+
+# Example usage:
+# Constructing a sample binary tree
+root = TreeNode(10)
+root.left = TreeNode(5)
+root.right = TreeNode(12)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(7)
+
+target_sum = 22
+
+result_paths, result_count = find_paths_with_sum(root, target_sum)
+
+print("Paths with sum", target_sum, "are:", result_paths)
+print("Number of paths with sum", target_sum, "is:", result_count)
