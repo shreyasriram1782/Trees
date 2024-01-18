@@ -1,0 +1,119 @@
+class SegmentTree:
+    class TreeNode:
+        def __init__(self, start_interval, end_interval):
+            self.data = 0
+            self.start_interval = start_interval
+            self.end_interval = end_interval
+            self.left_child = None
+            self.right_child = None
+
+    def __init__(self, input_array):
+        self.root = self._construct_tree(input_array, 0, len(input_array) - 1)
+
+    def _construct_tree(self, input_array, start, end):
+        if start == end:
+            leaf_node = self.TreeNode(start, end)
+            leaf_node.data = input_array[start]
+            return leaf_node
+
+        current_node = self.TreeNode(start, end)
+        mid = (start + end) // 2
+
+        current_node.left_child = self._construct_tree(input_array, start, mid)
+        current_node.right_child = self._construct_tree(input_array, mid + 1, end)
+
+        current_node.data = current_node.left_child.data + current_node.right_child.data
+        return current_node
+
+    def display(self):
+        self._display(self.root)
+
+    def _display(self, node):
+        if node.left_child:
+            print(f"Interval=({node.left_child.start_interval}-{node.left_child.end_interval}) and data: {node.left_child.data} => ", end="")
+        else:
+            print("No left child", end="")
+
+        print(f"Interval=({node.start_interval}-{node.end_interval}) and data: {node.data} <= ", end="")
+
+        if node.right_child:
+            print(f"Interval=({node.right_child.start_interval}-{node.right_child.end_interval}) and data: {node.right_child.data}")
+        else:
+            print("No right child")
+
+        if node.left_child:
+            self._display(node.left_child)
+        if node.right_child:
+            self._display(node.right_child)
+
+    def query_sum(self, query_start_index, query_end_index):
+        return self._query_sum(self.root, query_start_index, query_end_index)
+
+    def _query_sum(self, node, query_start_index, query_end_index):
+        if node.start_interval >= query_start_index and node.end_interval <= query_end_index:
+            return node.data
+        elif node.start_interval > query_end_index or node.end_interval < query_start_index:
+            return 0
+        else:
+            return self._query_sum(node.left_child, query_start_index, query_end_index) + self._query_sum(node.right_child, query_start_index, query_end_index)
+
+    def query_min(self, query_start_index, query_end_index):
+        return self._query_min(self.root, query_start_index, query_end_index)
+
+    def _query_min(self, node, query_start_index, query_end_index):
+        if node.start_interval >= query_start_index and node.end_interval <= query_end_index:
+            return node.data
+        elif node.start_interval > query_end_index or node.end_interval < query_start_index:
+            return float('inf')  # Return positive infinity for nodes outside the query range
+        else:
+            return min(self._query_min(node.left_child, query_start_index, query_end_index), self._query_min(node.right_child, query_start_index, query_end_index))
+
+    def query_max(self, query_start_index, query_end_index):
+        return self._query_max(self.root, query_start_index, query_end_index)
+
+    def _query_max(self, node, query_start_index, query_end_index):
+        if node.start_interval >= query_start_index and node.end_interval <= query_end_index:
+            return node.data
+        elif node.start_interval > query_end_index or node.end_interval < query_start_index:
+            return float('-inf')  # Return negative infinity for nodes outside the query range
+        else:
+            return max(self._query_max(node.left_child, query_start_index, query_end_index), self._query_max(node.right_child, query_start_index, query_end_index))
+
+    def update_element(self, index, new_value):
+        self.root.data = self._update_element(self.root, index, new_value)
+
+    def _update_element(self, node, index, new_value):
+        if index >= node.start_interval and index <= node.end_interval:
+            if index == node.start_interval and index == node.end_interval:
+                node.data = new_value
+                return node.data
+            else:
+                left_result = self._update_element(node.left_child, index, new_value)
+                right_result = self._update_element(node.right_child, index, new_value)
+                node.data = left_result + right_result
+                return node.data
+        return node.data
+
+
+# Main class
+if __name__ == "__main__":
+    input_array = [3, 8, 6, 7, -2, -8, 4, 9]
+    segment_tree = SegmentTree(input_array)
+    segment_tree.display()
+
+    query_start = 1
+    query_end = 6
+
+    sum_result = segment_tree.query_sum(query_start, query_end)
+    min_result = segment_tree.query_min(query_start, query_end)
+    max_result = segment_tree.query_max(query_start, query_end)
+
+    print(f"\nSum of elements in the range ({query_start}-{query_end}): {sum_result}")
+    print(f"Minimum value in the range ({query_start}-{query_end}): {min_result}")
+    print(f"Maximum value in the range ({query_start}-{query_end}): {max_result}")
+
+    # Example of updating an element at index 3 to a new value 10
+    update_index = 3
+    new_value = 10
+    segment_tree.update_element(update_index, new_value)
+
