@@ -1,0 +1,46 @@
+from collections import defaultdict, deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def vertical_order_traversal(root):
+    if not root:
+        return []
+
+    result = []
+    queue = deque([(root, 0)])  # Tuple (node, horizontal distance)
+    vertical_order_map = defaultdict(list)
+    min_col, max_col = 0, 0  # Maintain min and max column values
+
+    while queue:
+        current, horizontal_distance = queue.popleft()
+
+        vertical_order_map[horizontal_distance].append(current.val)
+        min_col = min(min_col, horizontal_distance)
+        max_col = max(max_col, horizontal_distance)
+
+        if current.left:
+            queue.append((current.left, horizontal_distance - 1))
+        if current.right:
+            queue.append((current.right, horizontal_distance + 1))
+
+    # Extract the nodes from the vertical_order_map using the range from min_col to max_col
+    for col in range(min_col, max_col + 1):
+        result.extend(vertical_order_map[col])
+
+    return result
+
+# Example
+# Constructing a sample binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
+
+print("Vertical Order Traversal of the Binary Tree:", vertical_order_traversal(root))
