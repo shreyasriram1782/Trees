@@ -1,0 +1,60 @@
+from collections import deque
+
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def zigzag_level_order(root):
+    if not root:
+        return []
+
+    result = []
+    queue = deque([root])
+    reverse_order = False
+
+    while queue:
+        level_size = len(queue)
+        current_level = deque()
+
+        for _ in range(level_size):
+            node = queue.popleft()
+
+            # Depending on the direction, append the node's value to the current level
+            if reverse_order:
+                current_level.appendleft(node.value)
+            else:
+                current_level.append(node.value)
+
+            # Add the children of the current node to the queue
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        result.append(list(current_level))
+        reverse_order = not reverse_order
+
+    return result
+
+# Example usage:
+# Constructing a binary tree:
+#       1
+#      / \
+#     2   3
+#    / \ / \
+#   4  5 6  7
+
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
+
+result = zigzag_level_order(root)
+print("Zigzag Level Order Traversal:")
+for level in result:
+    print(level)
