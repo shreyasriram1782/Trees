@@ -1,0 +1,40 @@
+from collections import deque
+
+def ladder_length(begin_word, end_word, word_list):
+    if end_word not in word_list:
+        return 0
+
+    visited = set()
+    queue = deque([begin_word])
+    length = 0
+
+    while queue:
+        size = len(queue)
+        length += 1
+
+        for _ in range(size):
+            current = queue.popleft()
+
+            for j in range(len(current)):
+                temp = list(current)
+
+                for c in range(ord('a'), ord('z') + 1):
+                    temp[j] = chr(c)
+                    new_word = ''.join(temp)
+
+                    if new_word == end_word:
+                        return length + 1
+
+                    if new_word in word_list and new_word not in visited:
+                        queue.append(new_word)
+                        visited.add(new_word)
+
+    return 0
+
+# Example usage
+begin_word = "hit"
+end_word = "cog"
+word_list = ["hot", "dot", "dog", "lot", "log", "cog"]
+
+result = ladder_length(begin_word, end_word, word_list)
+print("Length of the ladder:", result)
