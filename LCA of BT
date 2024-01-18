@@ -1,0 +1,39 @@
+class TreeNode:
+    def __init__(self, key):
+        self.val = key
+        self.left = None
+        self.right = None
+
+def find_lca(root, p, q):
+    # Base case: if the root is None or one of the nodes is found
+    if not root or root.val == p.val or root.val == q.val:
+        return root
+
+    # Recursively search for the LCA in the left and right subtrees
+    left_lca = find_lca(root.left, p, q)
+    right_lca = find_lca(root.right, p, q)
+
+    # If both nodes are found in different subtrees, the current root is the LCA
+    if left_lca and right_lca:
+        return root
+
+    # If one node is found, return that node as a potential LCA
+    return left_lca if left_lca else right_lca
+
+# Example usage:
+# Construct a binary tree
+root = TreeNode(3)
+root.left = TreeNode(5)
+root.right = TreeNode(1)
+root.left.left = TreeNode(6)
+root.left.right = TreeNode(2)
+root.right.left = TreeNode(0)
+root.right.right = TreeNode(8)
+root.left.right.left = TreeNode(7)
+root.left.right.right = TreeNode(4)
+
+p = root.left  # Node with value 5
+q = root.right  # Node with value 1
+
+lca_node = find_lca(root, p, q)
+print("Lowest Common Ancestor (LCA) of {} and {} is: {}".format(p.val, q.val, lca_node.val))
