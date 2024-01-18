@@ -1,0 +1,61 @@
+class TreeNode:
+    def __init__(self, key):
+        self.val = key
+        self.left = None
+        self.right = None
+
+def findPath(root, target, path):
+    if not root:
+        return False
+
+    path.append(root)
+
+    if root.val == target.val:
+        return True
+
+    if (root.left and findPath(root.left, target, path)) or (root.right and findPath(root.right, target, path)):
+        return True
+
+    path.pop()
+    return False
+
+def findMaxValueBetweenNodes(root, p, q):
+    path_p = []
+    path_q = []
+
+    if not findPath(root, p, path_p) or not findPath(root, q, path_q):
+        return None  # One or both nodes not found in the tree
+
+    common_path = None
+    for node_p, node_q in zip(path_p, path_q):
+        if node_p.val == node_q.val:
+            common_path = node_p
+        else:
+            break
+
+    if common_path:
+        max_value = float('-inf')
+        current = common_path
+        while current:
+            max_value = max(max_value, current.val)
+            current = current.left if p.val < current.val else current.right
+
+        return max_value
+    else:
+        return None  # No common path found
+
+# Example usage:
+# Construct a non-BST
+root = TreeNode(20)
+root.left = TreeNode(10)
+root.right = TreeNode(30)
+root.left.left = TreeNode(5)
+root.left.right = TreeNode(15)
+root.right.left = TreeNode(25)
+root.right.right = TreeNode(35)
+
+p = root.left.left  # Node with value 5
+q = root.right.right  # Node with value 35
+
+result = findMaxValueBetweenNodes(root, p, q)
+print("The highest value in the path between {} and {} is: {}".format(p.val, q.val, result))
