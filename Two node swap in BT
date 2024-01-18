@@ -1,0 +1,43 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def correct_bst(root):
+    def in_order_traversal(node):
+        nonlocal first, second, prev
+        if node:
+            in_order_traversal(node.left)
+
+            # Check for the first and second swapped nodes
+            if prev and prev.val > node.val:
+                if first is None:
+                    first = prev
+                second = node
+
+            prev = node
+
+            in_order_traversal(node.right)
+
+    first = None  # First swapped node
+    second = None  # Second swapped node
+    prev = None  # Previous node in the in-order traversal
+    in_order_traversal(root)
+
+    # Swap the values of the two nodes
+    first.val, second.val = second.val, first.val
+
+# Example
+# Constructing a BST with two nodes swapped
+#       1
+#      / \
+#     3   2
+#        /
+#       4
+root = TreeNode(1)
+root.left = TreeNode(3)
+root.right = TreeNode(2, TreeNode(4))
+
+# Correct the BST
+correct_bst(root)
