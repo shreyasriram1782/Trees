@@ -1,0 +1,75 @@
+from collections import deque
+
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def level_order_successor(root, target):
+    if not root:
+        return None
+
+    queue = deque([root])
+
+    while queue:
+        node = queue.popleft()
+
+        # Check if the current node is the target node
+        if node == target:
+            # If the target node is the last node in the current level,
+            # return None as there is no successor in this case.
+            if not queue:
+                return None
+            else:
+                return queue.popleft().value  # Return the value of the next node in the queue
+
+        # Add the children of the current node to the queue
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+    return None  # Return None if the target node is not found
+
+# Example usage:
+# Constructing a binary tree:
+#       1
+#      / \
+#     2   3
+#    / \ / \
+#   4  5 6  7
+
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
+
+target_node_value = 3
+target_node = None
+
+# Find the target node
+def find_target(node, target_value):
+    if not node:
+        return None
+
+    if node.value == target_value:
+        return node
+
+    left_result = find_target(node.left, target_value)
+    right_result = find_target(node.right, target_value)
+
+    return left_result or right_result
+
+target_node = find_target(root, target_node_value)
+
+# Find the level order successor of the target node
+successor_value = level_order_successor(root, target_node)
+
+if successor_value is not None:
+    print(f"The level order successor of node {target_node_value} is {successor_value}.")
+else:
+    print(f"No level order successor found for node {target_node_value}.")
