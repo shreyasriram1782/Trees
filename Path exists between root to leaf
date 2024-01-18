@@ -1,0 +1,42 @@
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def is_valid_path(root, path):
+    if not root or not path:
+        return False
+
+    return check_path_recursive(root, path, 0)
+
+def check_path_recursive(node, path, index):
+    # If the current node is None or the value doesn't match the path, return False
+    if node is None or node.value != path[index]:
+        return False
+
+    # If it's a leaf node and the index reaches the end of the path, return True
+    if node.left is None and node.right is None and index == len(path) - 1:
+        return True
+
+    # Check the left and right subtrees with the next index
+    return (check_path_recursive(node.left, path, index + 1) or
+            check_path_recursive(node.right, path, index + 1))
+
+# Example usage:
+# Constructing a sample binary tree
+root = TreeNode(10)
+root.left = TreeNode(5)
+root.right = TreeNode(12)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(7)
+
+# Example path represented by an array
+example_path = [10, 5, 7]
+
+result = is_valid_path(root, example_path)
+
+if result:
+    print("The array forms a valid path from the root to a leaf.")
+else:
+    print("The array does not form a valid path.")
