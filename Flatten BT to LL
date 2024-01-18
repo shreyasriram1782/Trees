@@ -1,0 +1,56 @@
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def flatten_binary_tree(root):
+    if not root:
+        return None
+
+    # Helper function to recursively flatten the binary tree
+    def flatten_helper(node):
+        if not node:
+            return None
+
+        # Save the right subtree
+        right_subtree = node.right
+
+        # Flatten the left subtree
+        left_tail = flatten_helper(node.left)
+
+        # Flatten the right subtree
+        right_tail = flatten_helper(right_subtree)
+
+        # If there is a left subtree, move it to the right
+        if left_tail:
+            left_tail.right = right_subtree
+            node.right = node.left
+            node.left = None
+
+        # Return the tail of the flattened subtree
+        return right_tail if right_tail else left_tail if left_tail else node
+
+    flatten_helper(root)
+
+# Example usage:
+# Construct a sample binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(5)
+root.left.left = TreeNode(3)
+root.left.right = TreeNode(4)
+root.right.right = TreeNode(6)
+
+# Flatten the binary tree to a linked list
+flatten_binary_tree(root)
+
+# Function to print the flattened linked list
+def print_linked_list(node):
+    while node:
+        print(node.value, end=" ")
+        node = node.right
+
+# Print the flattened linked list
+print("Flattened linked list:")
+print_linked_list(root)
