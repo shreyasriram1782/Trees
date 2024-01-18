@@ -1,0 +1,38 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def hasPathSum(self, root, targetSum):
+        # Helper function to check for path sum
+        def hasPathSumHelper(node, remaining_sum):
+            # Base case: Check if it's a leaf node and the remaining sum is zero
+            if not node:
+                return False
+            if not node.left and not node.right and remaining_sum - node.val == 0:
+                return True
+            
+            # Recursively check for path sum in left and right subtrees
+            return (hasPathSumHelper(node.left, remaining_sum - node.val) or
+                    hasPathSumHelper(node.right, remaining_sum - node.val))
+        
+        return hasPathSumHelper(root, targetSum)
+
+# Example usage:
+# Using the same sample binary tree as before
+root = TreeNode(5)
+root.left = TreeNode(4)
+root.right = TreeNode(8)
+root.left.left = TreeNode(11)
+root.left.left.left = TreeNode(7)
+root.left.left.right = TreeNode(2)
+root.right.left = TreeNode(13)
+root.right.right = TreeNode(4)
+root.right.right.right = TreeNode(1)
+
+solution = Solution()
+target_sum = 22
+result = solution.hasPathSum(root, target_sum)
+print(result)  # Output: True (5 + 4 + 11 + 2 = 22)
