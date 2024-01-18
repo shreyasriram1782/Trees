@@ -1,0 +1,38 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def sumNumbers(self, root):
+        # Helper function to calculate the sum recursively
+        def sumNumbersHelper(node, current_sum):
+            if not node:
+                return 0
+            
+            # Calculate the current sum considering the current node's value
+            current_sum = current_sum * 10 + node.val
+            
+            # If it's a leaf node, return the current sum
+            if not node.left and not node.right:
+                return current_sum
+            
+            # Otherwise, recursively calculate the sum for left and right subtrees
+            return (sumNumbersHelper(node.left, current_sum) +
+                    sumNumbersHelper(node.right, current_sum))
+        
+        return sumNumbersHelper(root, 0)
+
+# Example usage:
+# Constructing a sample binary tree
+#        1
+#       / \
+#      2   3
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+
+solution = Solution()
+result = solution.sumNumbers(root)
+print(result)  # Output: 25 (12 + 13)
