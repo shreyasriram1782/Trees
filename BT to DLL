@@ -1,0 +1,57 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class DLLNode:
+    def __init__(self, val=0, prev=None, next=None):
+        self.val = val
+        self.prev = prev
+        self.next = next
+
+def tree_to_dll(root):
+    def in_order_traversal(node):
+        nonlocal head, prev
+        if node:
+            in_order_traversal(node.left)
+
+            # Create a DLL node for the current tree node
+            dll_node = DLLNode(node.val)
+
+            # Adjust pointers
+            if prev is None:
+                head = dll_node
+            else:
+                prev.next = dll_node
+                dll_node.prev = prev
+
+            prev = dll_node
+
+            in_order_traversal(node.right)
+
+    head = None  # Head of the DLL
+    prev = None  # Previous node in the DLL
+    in_order_traversal(root)
+
+    return head
+
+# Example
+# Constructing a sample binary tree
+#       4
+#      / \
+#     2   6
+#    / \   \
+#   1   3   5
+root = TreeNode(4)
+root.left = TreeNode(2, TreeNode(1), TreeNode(3))
+root.right = TreeNode(6, None, TreeNode(5))
+
+# Convert the binary tree to a DLL
+dll_head = tree_to_dll(root)
+
+# Print the DLL
+current = dll_head
+while current:
+    print(current.val, end=" ")
+    current = current.next
