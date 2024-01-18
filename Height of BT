@@ -1,0 +1,30 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def maxDepth(self, root):
+        # Helper function to calculate the maximum depth recursively
+        def maxDepthHelper(node):
+            # Base case: Return 0 for an empty subtree
+            if not node:
+                return 0
+            
+            # Calculate the maximum depth for the left and right subtrees and return the maximum
+            return max(maxDepthHelper(node.left), maxDepthHelper(node.right)) + 1
+        
+        return maxDepthHelper(root)
+
+# Example usage:
+# Using the same sample binary tree as before
+root = TreeNode(3)
+root.left = TreeNode(9)
+root.right = TreeNode(20)
+root.right.left = TreeNode(15)
+root.right.right = TreeNode(7)
+
+solution = Solution()
+result = solution.maxDepth(root)
+print(result)  # Output: 3 (maximum depth of the binary tree)
