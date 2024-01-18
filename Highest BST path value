@@ -1,0 +1,49 @@
+class TreeNode:
+    def __init__(self, key):
+        self.val = key
+        self.left = None
+        self.right = None
+
+def findMaxValueBetweenNodes(root, p, q):
+    def findLCA(node, p, q):
+        if not node:
+            return None
+
+        if p.val < node.val and q.val < node.val:
+            return findLCA(node.left, p, q)
+        elif p.val > node.val and q.val > node.val:
+            return findLCA(node.right, p, q)
+        else:
+            return node
+
+    def findMaxValue(node, target):
+        if not node:
+            return float('-inf')
+
+        if node.val == target.val:
+            return node.val
+        elif target.val < node.val:
+            return max(node.val, findMaxValue(node.left, target))
+        else:
+            return max(node.val, findMaxValue(node.right, target))
+
+    lca = findLCA(root, p, q)
+    max_value = max(findMaxValue(lca, p), findMaxValue(lca, q))
+
+    return max_value
+
+# Example usage:
+# Construct a BST
+root = TreeNode(20)
+root.left = TreeNode(10)
+root.right = TreeNode(30)
+root.left.left = TreeNode(5)
+root.left.right = TreeNode(15)
+root.right.left = TreeNode(25)
+root.right.right = TreeNode(35)
+
+p = root.left.left  # Node with value 5
+q = root.right.right  # Node with value 35
+
+result = findMaxValueBetweenNodes(root, p, q)
+print("The highest value in the path between {} and {} is: {}".format(p.val, q.val, result))
