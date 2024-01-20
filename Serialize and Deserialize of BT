@@ -1,0 +1,71 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def serialize(root):
+    """
+    Serialize a binary tree to a string.
+
+    Parameters:
+    - root: TreeNode
+        The root of the binary tree.
+
+    Returns:
+    - str
+        The serialized string representation of the binary tree.
+    """
+    if not root:
+        return "None,"
+
+    serialized_string = str(root.val) + ","
+    serialized_string += serialize(root.left)
+    serialized_string += serialize(root.right)
+
+    return serialized_string
+
+def deserialize(data):
+    """
+    Deserialize a string to a binary tree.
+
+    Parameters:
+    - data: str
+        The serialized string representation of the binary tree.
+
+    Returns:
+    - TreeNode
+        The root of the reconstructed binary tree.
+    """
+    def helper():
+        nonlocal data
+        if data[0] == "None":
+            data.pop(0)
+            return None
+
+        root = TreeNode(int(data[0]))
+        data.pop(0)
+        root.left = helper()
+        root.right = helper()
+        return root
+
+    data = data.split(",")
+    return helper()
+
+# Example usage:
+# Constructing a sample binary tree
+#        1
+#       / \
+#      2   3
+#         / \
+#        4   5
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3, TreeNode(4), TreeNode(5))
+
+# Serialize the binary tree
+serialized_tree = serialize(root)
+print("Serialized Tree:", serialized_tree)
+
+# Deserialize the string to reconstruct the binary tree
+reconstructed_tree = deserialize(serialized_tree)
