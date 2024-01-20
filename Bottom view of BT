@@ -1,0 +1,46 @@
+from collections import deque, defaultdict
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def bottom_view(root):
+    if not root:
+        return []
+
+    result = []
+    queue = deque([(root, 0)])  # (node, horizontal distance)
+    hd_map = defaultdict(int)
+
+    while queue:
+        node, hd = queue.popleft()
+
+        # Update the node value for the horizontal distance
+        hd_map[hd] = node.val
+
+        # Enqueue left and right children with updated horizontal distances
+        if node.left:
+            queue.append((node.left, hd - 1))
+        if node.right:
+            queue.append((node.right, hd + 1))
+
+    # Sort the map by horizontal distance and extract the values
+    sorted_hd_map = sorted(hd_map.items(), key=lambda x: x[0])
+    result = [val for _, val in sorted_hd_map]
+
+    return result
+
+# Example usage:
+# Constructing a sample binary tree
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root = TreeNode(1, TreeNode(2, TreeNode(4), TreeNode(5)), TreeNode(3))
+
+# Find the bottom view of the binary tree
+bottom_view_result = bottom_view(root)
+print(bottom_view_result)
