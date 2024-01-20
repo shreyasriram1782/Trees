@@ -1,0 +1,32 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def sorted_array_to_bst(nums):
+    """
+    Convert a sorted array into a Binary Search Tree (BST).
+
+    Parameters:
+    - nums: List[int]
+        The sorted array.
+
+    Returns:
+    - TreeNode
+        The root of the resulting BST.
+    """
+    if not nums:
+        return None
+
+    mid = len(nums) // 2
+    root = TreeNode(nums[mid])
+
+    root.left = sorted_array_to_bst(nums[:mid])
+    root.right = sorted_array_to_bst(nums[mid+1:])
+
+    return root
+
+# Example usage:
+sorted_array = [1, 2, 3, 4, 5, 6, 7]
+bst_root = sorted_array_to_bst(sorted_array)
