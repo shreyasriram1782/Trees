@@ -1,0 +1,45 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def is_valid_BST(root, min_val=float('-inf'), max_val=float('inf')):
+    """
+    Validate if a binary tree is a Binary Search Tree (BST).
+    
+    Parameters:
+    - root: TreeNode
+        The root of the binary tree.
+    - min_val: int, optional
+        The minimum valid value for a node.
+    - max_val: int, optional
+        The maximum valid value for a node.
+        
+    Returns:
+    - bool
+        True if the binary tree is a BST, False otherwise.
+    """
+    if root is None:
+        return True
+
+    # Check if the current node's value is within the valid range
+    if not (min_val < root.val < max_val):
+        return False
+
+    # Recursively check left and right subtrees
+    return (is_valid_BST(root.left, min_val, root.val) and
+            is_valid_BST(root.right, root.val, max_val))
+
+# Example usage:
+# Constructing a sample BST
+#        2
+#       / \
+#      1   3
+root = TreeNode(2)
+root.left = TreeNode(1)
+root.right = TreeNode(3)
+
+# Check if the tree is a valid BST
+result = is_valid_BST(root)
+print(result)  # Output: True
