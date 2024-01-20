@@ -1,0 +1,56 @@
+class Node:
+    def __init__(self, val=0, left=None, right=None, next=None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+
+def connect(root):
+    if not root:
+        return root
+
+    current = root  # Start from the leftmost node in the current level
+
+    while current and current.left:
+        next_level_start = current.left  # The leftmost node of the next level
+
+        while current:
+            # Connect the left child to the right child
+            current.left.next = current.right
+
+            # Connect the right child to the next node's left child (if exists)
+            if current.next:
+                current.right.next = current.next.left
+
+            # Move to the next node in the current level
+            current = current.next
+
+        # Move to the leftmost node of the next level
+        current = next_level_start
+
+    return root
+
+# Example usage:
+# Constructing a sample perfect binary tree
+#        1
+#       / \
+#      2   3
+#     / \ / \
+#    4  5 6  7
+root = Node(1, Node(2, Node(4), Node(5)), Node(3, Node(6), Node(7)))
+
+# Connect the next pointers
+connected_root = connect(root)
+
+# Print the next pointers
+def print_next_pointers(node):
+    while node:
+        print(node.val, end=" -> ")
+        node = node.next
+    print("None")
+
+# Print the next pointers of each level
+current_level_start = connected_root
+while current_level_start:
+    print_next_pointers(current_level_start)
+    current_level_start = current_level_start.left
