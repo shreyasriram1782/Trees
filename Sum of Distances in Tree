@@ -1,0 +1,62 @@
+class Solution:
+    def sumOfDistancesInTree(self, n: int, edges: List[List[int]]) -> List[int]:
+
+        graph = defaultdict(list)
+        for u, v in edges:
+            graph[u].append(v)
+            graph[v].append(u)
+        
+        count = [1] * n
+        result = [0] * n
+
+        def dfs1(node, parent):
+            for child in graph[node]:
+                if child != parent:
+                    dfs1(child, node)
+                    count[node] += count[child]
+                    result[node] += result[child] + count[child]
+
+        def dfs2(node, parent):
+            for child in graph[node]:
+                if child != parent:
+                    result[child] = result[node] - count[child] + (n - count[child])
+                    dfs2(child, node)
+
+        dfs1(0, -1)
+        dfs2(0, -1)
+
+        return result
+
+
+Perform a DFS traversal to calculate two pieces of information 
+at each node: the count of nodes in the subtree rooted at that 
+node (count) and the sum of distances from the node to its 
+descendants in the subtree (result).
+Use the information obtained in the first DFS to calculate
+the sum of distances for each node in the tree during a second DFS traversal.
+Approach:
+
+First DFS (dfs1):
+
+Start a post-order DFS traversal from any arbitrary node.
+For each node, calculate the count of nodes in its subtree 
+(count) and the sum of distances from the node to its descendants (result).
+Store the calculated values in arrays (count and result).
+Second DFS (dfs2):
+
+Start a pre-order DFS traversal.
+Use the information obtained in the first DFS to calculate the sum of distances for each node.
+Update the result values based on the information gathered.
+Return Result:
+
+The result array now contains the sum of distances for each node in the tree.
+This approach ensures that we efficiently calculate the sum 
+of distances for each node by avoiding redundant calculations. 
+The first DFS provides essential information about each node's subtree, 
+and the second DFS uses this information to determine the sum of 
+distances for each node in the entire tree.
+
+The overall time complexity is O(N), where N is the number of 
+nodes in the tree, as each node is visited exactly once during 
+the DFS traversals. The space complexity is also O(N) due 
+to the storage of the count and result arrays.
