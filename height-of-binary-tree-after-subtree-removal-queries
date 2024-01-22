@@ -1,0 +1,89 @@
+Intuition
+We can think of solving offline query.
+Not all nodes will affect the height of tree, only those node who 
+are in path of maximum height will affect the height of tree
+
+Approach
+Let's say leaf node X is giving the longest height. Now let's 
+say path from root to X is like n1 -> n2 -> n3 -> n4 -> X.
+So removing only these node will alter your height.
+So we start from root, check the level of left and right, and 
+whichever is greater, removing that will affect the answer. 
+Whichever is lower, removing that won't change our height.
+We do recursively to all nodes.
+curmx is the current maximum height if we remove the curent node.
+from collections import defaultdict
+from typing import List, Optional
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        # Dictionary to store the height of each node
+        node_heights = defaultdict(int)
+        # Variable to track the maximum height
+        max_height = 0
+
+        def calculate_height(node):
+            nonlocal max_height
+            if not node:
+                return 0
+            # Recursively calculate the height of left and right subtrees
+            left_height = calculate_height(node.left)
+            right_height = calculate_height(node.right)
+            # Update the height of the current node in the dictionary
+            node_heights[node.val] = max(left_height, right_height) + 1
+            # Update the maximum height
+            max_height = max(max_height, node_heights[node.val])
+            return node_heights[node.val]
+
+        # Calculate the initial heights of the tree
+        calculate_height(root)
+
+        # Initialize an array to store the answer for each query
+        answer = [max_height - 1] * (len(node_heights)+1)
+
+        # Variable to track the current maximum height during query processing
+        current_max_height = 0
+
+        def process_query(node, current_height):
+            nonlocal current_max_height
+            if not node:
+                return
+            left_height, right_height = 0, 0
+            # Calculate the heights of left and right subtrees
+            if node.left:
+                left_height = node_heights[node.left.val]
+            if node.right:
+                right_height = node_heights[node.right.val]
+
+            if right_height > left_height:
+                # Removing the right subtree affects the height
+                right_child = node.right.val
+                current_max_height = max(current_max_height, current_height + left_height)
+                answer[right_child] = current_max_height
+                process_query(node.right, current_height + 1)
+            elif left_height > right_height:
+                # Removing the left subtree affects the height
+                left_child = node.left.val
+                current_max_height = max(current_max_height, current_height + right_height)
+                answer[left_child] = current_max_height
+                process_query(node.left, current_height + 1)
+            else:
+                # If both subtrees have the same height, no change in height
+                return
+
+        # Process each query independently
+        process_query(root, 0)
+
+        # Return the array containing the height after each query
+        return [answer[node] for node in queries]
+
+The time complexity is O(N),
+where N is the number of nodes in the tree, as each node is visited once. 
+The space complexity is also O(N) due to the dictionary and other variables.
